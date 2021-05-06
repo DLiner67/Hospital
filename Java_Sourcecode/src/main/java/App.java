@@ -1,6 +1,11 @@
 public class App {
 
     public static void main(String[] args) {
-        System.out.println("Hello World");
+        Database db=new Database();
+        try {
+            db.getAllDoctors();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
