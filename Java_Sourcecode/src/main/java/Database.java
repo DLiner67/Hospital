@@ -20,7 +20,7 @@ public class Database {
 
     public void getAllDoctors() throws SQLException {
        Statement st= c.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM hospital.ärztin");
+        ResultSet rs = st.executeQuery("SELECT * FROM hospital.aerztin");
       try {
 
           while (rs.next()) {
@@ -47,7 +47,7 @@ public class Database {
     public void getPatientWithName(String name) throws SQLException {//wenn name
         //SELECT * FROM hospital.PatientIn where name='Kleines Kino'or 1=1; #';
         Statement st= c.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM hospital.PatientIn where Patient.Name='"+name+"'");
+        ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where patientin.name ='"+name+"'");
         //Normal: in name="Anna Mustermann"
         //Injection: name=""
 
@@ -62,7 +62,7 @@ public class Database {
     public void getPatientsWithMEdicine(String name) throws SQLException {
         Statement st= c.createStatement();
         //Injection=Aspirin'or 1=1; #'
-        ResultSet rs = st.executeQuery("SELECT * FROM hospital.PatientIn gets Medikament where PatientIn gets Medikament.Medikament_Name="+name);
+        ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin gets medikament where patientin gets medikament.medikament_name="+name);
         //Beheben durch PreparedStatements
     }
 
