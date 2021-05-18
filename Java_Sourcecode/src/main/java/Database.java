@@ -59,11 +59,13 @@ public class Database {
         }
         closeAll();
     }
-    public void getPatientsWithMEdicine(String name) throws SQLException {
+    public void getPatientsWithMedicine(String name) throws SQLException {
         Statement st= c.createStatement();
-        //Injection=Aspirin'or 1=1; #'
+        //SELECT * FROM hospital.patientin gets medikament WHERE patientIn_sv_nummer = 1234 OR 1=1;
         ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin gets medikament where patientin gets medikament.medikament_name="+name);
         //Beheben durch PreparedStatements
+        //PreparedStatement ps = connection.prepareStatement (
+        //"SELECT * FROM hospital.patientin gets medikament where patientin gets medikament.medikament_name="+name);
     }
 
     public void closeAll() throws SQLException {
