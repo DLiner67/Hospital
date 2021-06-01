@@ -6,7 +6,7 @@ public class Database {
     private   Connection c;
     private final String url="jdbc:mysql://127.0.0.1:3306/hospital";
     private final String user="root";
-    private final String password="";
+    private final String password="";//UNSICHER ! Nicht empfehlenswert
     public Database(){
 
         try {
@@ -46,19 +46,37 @@ public class Database {
     }
     public void getPatientWithName(String name) throws SQLException {//wenn name
         //SELECT * FROM hospital.PatientIn where name='Kleines Kino'or 1=1; #';
+        System.out.println("UNSAFE:");
         Statement st= c.createStatement();
-        System.out.println(name);
-        ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where name='' or 1=1#'");//("SELECT * FROM hospital.patientin where name ='"+name+"'");
+
+        ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where name ='"+name+"'");
+        //("SELECT * FROM hospital.patientin where name='' or 1=1#'");//
         //Normal: in name="Anna Mustermann"
         //Injection: name=""
-        System.out.println("All patients with name:"+name);
+
+        while (rs.next()) {
+            long svNummer = rs.getLong(1);
+            String nameInTable = rs.getString(2);
+            System.out.println("id:" + svNummer + " name:" + nameInTable);
+        }
+
+    }
+    public void getPatientWithNamePreparedStatement(String name) throws SQLException {//wenn name
+        //SELECT * FROM hospital.PatientIn where name='Kleines Kino'or 1=1; #';
+        System.out.println("SAFE:");
+        PreparedStatement st= c.prepareStatement("SELECT * FROM hospital.patientin where name =?");
+        st.setString(1,name);
+
+        ResultSet rs = st.executeQuery();
+
+
         while (rs.next()) {
             long svNummer = rs.getLong(1);
             String nameInTable = rs.getString(2);
 
             System.out.println("id:" + svNummer + " name:" + nameInTable);
         }
-        closeAll();
+        // closeAll();
     }
     public void getPatientsWithMedicine(String name) throws SQLException {
         Statement st= c.createStatement();
