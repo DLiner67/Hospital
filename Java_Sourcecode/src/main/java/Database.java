@@ -54,13 +54,12 @@ public class Database {
         System.out.println("UNSAFE:");
         Statement st= c.createStatement();
 
+        System.out.println("SELECT * FROM hospital.patientin where name ='"+name+"'");
+
         ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where name ='"+name+"'");
-        //("SELECT * FROM hospital.patientIn where name='' or 1=1#'");//
-        //';INSERT INTO hospital.patientin (`sv-nummer`, `name`) VALUES ('123456789','Hacked User')#
-        //';INSERT INTO hospital.patientin (sv-nummer,name) VALUES ('123456789','Hacked User')#
-        //';INSERT INTO hospital.patientin ('sv-nummer','name') VALUES (123456789,'Hacked User')#
-        //';INSERT INTO hospital.patientin ('sv-nummer','name') VALUES ('123456789','Hacked User')#
-        //';INSERT INTO hospital.patientin ('sv-nummer','name') VALUES ('123456789','HackedUser')#
+        //';INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko');
+        //;INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko');
+        //');INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko');
 
         while (rs.next()) {
             long svNummer = rs.getLong(1);
