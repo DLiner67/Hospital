@@ -1,12 +1,10 @@
-
-
 import java.sql.*;
 
 public class Database {
     private   Connection c;
     private final String url="jdbc:mysql://127.0.0.1:3306/hospital";
     private final String user="root";
-    private final String password="";//UNSICHER ! Nicht empfehlenswert
+    private final String password="";//UNSICHER! Nicht empfehlenswert
     public Database(){
 
         try {
@@ -15,9 +13,14 @@ public class Database {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+
         }
     }
 
+    /**
+     *
+     * @throws SQLException If connection closure fails then throw an exception
+     */
     public void getAllDoctors() throws SQLException {
        Statement st= c.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM hospital.aerztin");
@@ -33,26 +36,31 @@ public class Database {
           e.printStackTrace();
       }finally{
           rs.close();
-          st.close();
-
+          closeAll();
       }
-      closeAll();
+
 
     }
-    public void getAllPatients() throws SQLException {
 
+    /**
+     *
+     *
+     *
+     * @param name The name of the patient where we want the medical id from the database
+     * @throws SQLException If the table name is incorrect ot the query is wrong
+     */
+    public void getPatientWithName(String name) throws SQLException {
 
-            closeAll();
-    }
-    public void getPatientWithName(String name) throws SQLException {//wenn name
-        //SELECT * FROM hospital.PatientIn where name='Kleines Kino'or 1=1; #';
         System.out.println("UNSAFE:");
         Statement st= c.createStatement();
 
         ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where name ='"+name+"'");
-        //("SELECT * FROM hospital.patientin where name='' or 1=1#'");//
-        //Normal: in name="Anna Mustermann"
-        //Injection: name=""
+        //("SELECT * FROM hospital.patientIn where name='' or 1=1#'");//
+        //';INSERT INTO hospital.patientin (`sv-nummer`, `name`) VALUES ('123456789','Hacked User')#
+        //';INSERT INTO hospital.patientin (sv-nummer,name) VALUES ('123456789','Hacked User')#
+        //';INSERT INTO hospital.patientin ('sv-nummer','name') VALUES (123456789,'Hacked User')#
+        //';INSERT INTO hospital.patientin ('sv-nummer','name') VALUES ('123456789','Hacked User')#
+        //';INSERT INTO hospital.patientin ('sv-nummer','name') VALUES ('123456789','HackedUser')#
 
         while (rs.next()) {
             long svNummer = rs.getLong(1);
@@ -61,8 +69,15 @@ public class Database {
         }
 
     }
-    public void getPatientWithNamePreparedStatement(String name) throws SQLException {//wenn name
-        //SELECT * FROM hospital.PatientIn where name='Kleines Kino'or 1=1; #';
+    /**
+     *
+     *
+     *
+     * @param name The name of the patient where we want the medical id from the database
+     * @throws SQLException If the table name is incorrect ot the query is wrong
+     */
+    public void getPatientWithNamePreparedStatement(String name) throws SQLException {
+        //SELECT * FROM hospital.PatientIn where name='Egal'or 1=1; #';
         System.out.println("SAFE:");
         PreparedStatement st= c.prepareStatement("SELECT * FROM hospital.patientin where name =?");
         st.setString(1,name);
@@ -78,15 +93,16 @@ public class Database {
         }
         // closeAll();
     }
-    public void getPatientsWithMedicine(String name) throws SQLException {
-        Statement st= c.createStatement();
-        //SELECT * FROM hospital.patientin gets medikament WHERE patientIn_sv_nummer = 1234 OR 1=1;
-        ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin gets medikament where patientin gets medikament.medikament_name="+name);
-        //Beheben durch PreparedStatements
-        //PreparedStatement ps = connection.prepareStatement (
-        //"SELECT * FROM hospital.patientin gets medikament where patientin gets medikament.medikament_name="+name);
-    }
+    /*Spaltenanzahl einer Tabelle herausfinden*/
+    /*Patienten einfügen*/
 
+
+
+    /**
+     *
+     *
+     * @throws SQLException Is thrown when connection closure fails
+     */
     public void closeAll() throws SQLException {
 
         c.close();

@@ -8,11 +8,16 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+/**
+ * @author:Julia Nusko
+ * @version 1.0
+ *Connects to database and shows results in console
+ *
+ */
 public class Suchfenster extends JFrame {
 
-
-    Database db=new Database();
-
+   private final Database db=new Database();
+//INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('', ''), ('123456789', 'Hacked User')
 public Suchfenster() {
 
     setTitle("SQL Injection");
@@ -24,10 +29,14 @@ public Suchfenster() {
         public void windowOpened(WindowEvent e) {
         }
 
+        /**
+         *
+         * @param e is fired when the x-button is clicked
+         */
         @Override
         public void windowClosing(WindowEvent e) {
 
-            System.out.println("Closing DB Connection");
+
             try {
                 db.closeAll();
             } catch (SQLException throwables) {
@@ -81,6 +90,7 @@ public Suchfenster() {
 
         }
     });
+
     JButton safeButton = new JButton("Suche (Sicher)");
     safeButton.addActionListener(new ActionListener() {
 
@@ -120,7 +130,14 @@ public Suchfenster() {
 
 }
 //Problem mit Scanner ->auf GUI umgestellt
-public static void main(String[] args) throws SQLException {
+
+    /**
+     *
+     *
+     * @param args userinput from comandline.This program does not react on it.
+     * @throws SQLException If connection to database fails
+     */
+    public static void main(String[] args) throws SQLException {
 
             Suchfenster a = new Suchfenster();
 
