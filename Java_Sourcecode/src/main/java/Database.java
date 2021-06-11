@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database {
     private   Connection c;
@@ -49,24 +51,40 @@ public class Database {
      * @param name The name of the patient where we want the medical id from the database
      * @throws SQLException If the table name is incorrect ot the query is wrong
      */
-    public void getPatientWithName(String name) throws SQLException {
+    public List<String> getPatientWithName(String name) throws SQLException {
 
         System.out.println("UNSAFE:");
         Statement st= c.createStatement();
 
-        System.out.println("SELECT * FROM hospital.patientin where name ='"+name+"'");
+        //System.out.println("SELECT * FROM hospital.patientin where name ='"+name+"'");
 
         ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where name ='"+name+"'");
+        //ResultSet rs = st.executeQuery("SELECT * FROM hospital.patientin where name ='"+name+"'");
         //';INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko');
         //;INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko');
         //');INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko');
+        //'; INSERT INTO patientin (sv-nummer, name) VALUES ('373908071978', 'Nusko') #Name
+
+        //`; DROP TABLE hospital.patientin #
+        //`; INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES (`373908071978`, `Nusko`) #
+
+        //'; INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko') #Name
+        //'; INSERT INTO patientin (sv-nummer, name) VALUES (373908071978, 'Nusko') #Name
+        //'; INSERT INTO patientin (sv-nummer, name) VALUES (373908071978, 'Nusko') #
+        //'; INSERT INTO patientin (sv-nummer, name) VALUES (373908071978, Nusko) #
+       // '; INSERT INTO patientin (sv-nummer, name) VALUES ('373908071978',' Nusko') #
+        //'; INSERT INTO patientin ('sv-nummer',' name') VALUES ('373908071978',' Nusko') #
+        //'; INSERT INTO patientin ('sv-nummer','name') VALUES ('373908071978',' Nusko') #
+        //'; INSERT INTO patientin (sv-nummer,name) VALUES ('373908071978',' Nusko') #
+        //'
+        List<String>returnList=new ArrayList<>();
 
         while (rs.next()) {
             long svNummer = rs.getLong(1);
             String nameInTable = rs.getString(2);
-            System.out.println("id:" + svNummer + " name:" + nameInTable);
+           returnList.add("id:" + svNummer + " name:" + nameInTable);
         }
-
+        return returnList;
     }
     /**
      *
@@ -75,21 +93,22 @@ public class Database {
      * @param name The name of the patient where we want the medical id from the database
      * @throws SQLException If the table name is incorrect ot the query is wrong
      */
-    public void getPatientWithNamePreparedStatement(String name) throws SQLException {
+    public List<String> getPatientWithNamePreparedStatement(String name) throws SQLException {
         //SELECT * FROM hospital.PatientIn where name='Egal'or 1=1; #';
         System.out.println("SAFE:");
         PreparedStatement st= c.prepareStatement("SELECT * FROM hospital.patientin where name =?");
         st.setString(1,name);
 
         ResultSet rs = st.executeQuery();
-
+        List<String>returnList=new ArrayList<>();
 
         while (rs.next()) {
             long svNummer = rs.getLong(1);
             String nameInTable = rs.getString(2);
-
-            System.out.println("id:" + svNummer + " name:" + nameInTable);
+            returnList.add("id:" + svNummer + " name:" + nameInTable);
+           // System.out.println("id:" + svNummer + " name:" + nameInTable);
         }
+        return returnList;
         // closeAll();
     }
     /*Spaltenanzahl einer Tabelle herausfinden*/

@@ -5,8 +5,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.Border;
+import javax.swing.text.html.ListView;
 
 /**
  * @author:Julia Nusko
@@ -17,11 +20,19 @@ import javax.swing.JFrame;
 public class Suchfenster extends JFrame {
 
    private final Database db=new Database();
+   private final JList list;
+   private final DefaultListModel<String>displayList;
 //INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('', ''), ('123456789', 'Hacked User')
+    //'; INSERT INTO `patientin` (`sv-nummer`, `name`) VALUES ('373908071978', 'Nusko') #Name
 public Suchfenster() {
+    list=new JList();
+    displayList=new DefaultListModel<>();
+
+    list.setModel(displayList);
+
 
     setTitle("SQL Injection");
-    setSize(300, 200);
+    setSize(400, 800);
 
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.addWindowListener(new WindowListener() {
@@ -69,7 +80,7 @@ public Suchfenster() {
 
         }
     });
-    this.setLayout(new GridLayout(3,2));
+    this.setLayout(new BorderLayout());
 
 
     JTextField txtField=new JTextField("Name");
@@ -82,7 +93,15 @@ public Suchfenster() {
         public void actionPerformed(ActionEvent e) {
 
             try {
-                db.getPatientWithName(txtField.getText());
+               List<String> foundPatientsList= db.getPatientWithName(txtField.getText());
+               displayList.clear();
+               displayList.addAll(foundPatientsList);
+                if (foundPatientsList.size()==0){
+
+                    JOptionPane.showMessageDialog(null,"Nichts gefunden");
+
+
+                }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
 
@@ -98,7 +117,15 @@ public Suchfenster() {
         public void actionPerformed(ActionEvent e) {
 
             try {
-                db.getPatientWithNamePreparedStatement(txtField.getText());
+                List<String> foundPatientsList= db.getPatientWithNamePreparedStatement(txtField.getText());
+                if (foundPatientsList.size()==0){
+
+                    JOptionPane.showMessageDialog(null,"Nichts gefunden");
+
+
+                }
+                displayList.clear();
+                displayList.addAll(foundPatientsList);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
 
@@ -107,7 +134,7 @@ public Suchfenster() {
         }
     });
 
-
+/*
     JButton clearButton = new JButton("Konsole löschen");
     clearButton.addActionListener(new ActionListener() {
 
@@ -120,12 +147,19 @@ public Suchfenster() {
 
           }
         }
-    });
+    });*/
+    JPanel buttons=new JPanel();
+    buttons.setLayout(new BorderLayout());
 
-    this.add(txtField);
-    this.add(clearButton);
-    this.add(unsafeButton);
-    this.add(safeButton);
+    buttons.add(BorderLayout.WEST,safeButton);
+    buttons.add(BorderLayout.EAST,unsafeButton);
+
+
+    this.add(BorderLayout.NORTH,txtField);
+    //this.add(clearButton);
+    this.add(BorderLayout.SOUTH,buttons);
+
+    this.add(BorderLayout.CENTER,list);
     this.setVisible(true);
 
 }
